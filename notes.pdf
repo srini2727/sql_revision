@@ -1,0 +1,94 @@
+■ Basic to Intermediate SQL
+■ SELECT & WHERE
+Used to filter and retrieve specific rows and columns.
+Example: SELECT FirstName, LastName FROM Customers WHERE City = 'Anytown';
+■ ORDER BY
+Used to sort results by one or more columns.
+Example: SELECT * FROM Products ORDER BY UnitPrice DESC;
+■ GROUP BY & HAVING
+Group rows to perform aggregate operations. HAVING filters groups.
+Example: SELECT Category, COUNT(*) FROM Products GROUP BY Category HAVING COUNT(*) >
+1;
+■ JOINs (INNER, LEFT)
+Combine rows from multiple tables using foreign key relationships.
+Example: SELECT c.FirstName, o.OrderID FROM Customers c JOIN Orders o ON c.CustomerID =
+o.CustomerID;
+■ Subqueries & CTEs
+■ Subqueries
+Nested queries used to derive results for outer queries.
+Example: SELECT ProductName FROM Products WHERE UnitPrice = (SELECT MAX(UnitPrice)
+FROM Products);
+■ CTEs (Common Table Expressions)
+Temporary named result sets defined using WITH clause.
+Example: WITH AvgSalary AS (SELECT Department, AVG(Salary) AS AvgSal FROM Employees
+GROUP BY Department) SELECT * FROM Employees e JOIN AvgSalary a ON e.Department =
+a.Department;
+■ Window Functions
+■ RANK(), DENSE_RANK(), ROW_NUMBER()
+Assign row numbers or ranks within partitions.
+Example: SELECT ProductName, RANK() OVER(PARTITION BY Category ORDER BY UnitPrice
+DESC) FROM Products;
+■ LAG() & LEAD()
+Access data from preceding/following rows in a partition.
+Example: SELECT OrderID, OrderDate, LAG(OrderDate) OVER (PARTITION BY CustomerID ORDER
+BY OrderDate) AS PrevOrder FROM Orders;
+■ Running Totals (SUM OVER)
+Calculate cumulative aggregates per partition.
+Example: SELECT OrderID, SUM(Total) OVER (PARTITION BY CustomerID ORDER BY OrderDate)
+AS RunningTotal FROM Orders;
+■ Advanced SQL Use Cases
+■ Outer Joins
+Show all records from one table and matching ones from another.
+Example: SELECT p.ProductName, r.ReturnDate FROM Products p LEFT JOIN Returns r ON
+p.ProductID = r.ProductID;
+■ Duplicate Detection
+Identify repeated values in unique columns.
+Example: SELECT Email FROM Customers GROUP BY Email HAVING COUNT(*) > 1;
+■ Gaps in Sequence
+Find missing sequence IDs using LEAD or LAG.
+Example: SELECT OrderID, LEAD(OrderID) OVER (ORDER BY OrderID) - OrderID FROM Orders;
+■ SQL & Data Modeling – Advanced Topics
+■ Star vs Snowflake Schema
+- **Star Schema**: Fact table in the center joined to denormalized dimension tables. Optimized for fast
+reads.
+- **Snowflake Schema**: Dimensions are normalized into multiple related tables. Reduces redundancy.
+Use star for performance, snowflake for storage & integrity.
+Example: Fact_Sales → Dim_Customer, Dim_Product (Star) Dim_Product → Dim_Category
+(Snowflake).
+■ Normalization (1NF, 2NF, 3NF, BCNF)
+- **1NF**: Atomic values (no repeating groups)
+- **2NF**: No partial dependencies (only full key dependencies)
+- **3NF**: No transitive dependencies (non-key attributes don't depend on other non-keys)
+- **BCNF**: Every determinant is a candidate key.
+Example: Split 'FullAddress' into Street, City, Zip to achieve 1NF.
+■ Indexing Strategy
+Use indexes to improve performance of WHERE, JOIN, GROUP BY clauses.
+- **Clustered Index**: Sorts actual data in storage. Only one per table.
+- **Non-Clustered Index**: Separate from data. Multiple allowed.
+Example: CREATE INDEX idx_orders_customerid ON Orders(CustomerID);
+■ SCD (Slowly Changing Dimensions)
+Used to track changes in dimension data over time.
+- **Type 1**: Overwrite old data
+- **Type 2**: Add new row with versioning
+- **Type 3**: Add new column for historical value
+Example: Type 2 — Maintain historical address changes in Dim_Customer using 'IsCurrent' flag.
+■ Data Types and Constraints
+Ensure data quality and integrity in table design.
+- Common types: INT, VARCHAR, DECIMAL, DATE
+- Constraints: PRIMARY KEY, FOREIGN KEY, UNIQUE, CHECK, NOT NULL
+Example: ProductPrice DECIMAL(10,2) CHECK (ProductPrice > 0);
+■ Stored Procedures & Functions
+Encapsulate business logic inside the database.
+- **Procedure**: Executes actions (e.g., insert, update)
+- **Function**: Returns a value (used in SELECTs)
+Example: CREATE FUNCTION GetTotalSpent(@CustomerID INT) RETURNS MONEY AS ...
+■ Transaction Management
+Used to ensure ACID properties in multi-step operations.
+- Commands: BEGIN TRANSACTION, COMMIT, ROLLBACK
+Example: BEGIN TRANSACTION; UPDATE Products; COMMIT;
+■ Common Mistakes & Fixes
+- Using SELECT * (avoid in production)
+- Missing WHERE in DELETE or UPDATE
+- Not using aliases in JOINs
+- Ignoring NULL comparisons (use IS NULL)
+Fix: Use explicit columns and always test filters with sample data.
