@@ -44,5 +44,6 @@ Welcome to your all-in-one repository for mastering SQL and Data Modeling — pe
 
 1. **Clone this repo**
    ```bash
-   git clone https://github.com/srini2727/sql-data-modeling-revision.git
-   cd sql-data-modeling-revision
+   git clone https://github.com/srini2727/sql_revision.git
+   cd sql_revision
+
